@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.example
+dist
+presentation
+
+# Files
+24_HR_ROADMAP.md
+Sentinel_BluePrint.md

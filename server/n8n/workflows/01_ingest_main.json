@@ -1,0 +1,108 @@
+{
+  "name": "Sentinel - 01 Ingest Main",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sentinel-slack-ingest",
+        "options": {}
+      },
+      "name": "Webhook (Slack)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sentinel-github-ingest",
+        "options": {}
+      },
+      "name": "Webhook (GitHub)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 480]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": "primary",
+        "options": {}
+      },
+      "name": "Google Calendar Fetch",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-3-haiku-20240307",
+        "prompt": "Evaluate this notification for urgency based on the following context. Return a JSON with score (0-10) and reasoning."
+      },
+      "name": "Claude 3 API (Urgency Scoring)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [750, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "notification_metadata",
+        "columns": "source_id, source, notification_type, received_at, final_score"
+      },
+      "name": "PostgreSQL (Supabase)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1000, 300]
+    }
+  ],
+  "connections": {
+    "Webhook (Slack)": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook (GitHub)": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar Fetch": {
+      "main": [
+        [
+          {
+            "node": "Claude 3 API (Urgency Scoring)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude 3 API (Urgency Scoring)": {
+      "main": [
+        [
+          {
+            "node": "PostgreSQL (Supabase)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}
