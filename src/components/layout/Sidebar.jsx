@@ -95,7 +95,7 @@ const Sidebar = ({ activeView = 'overview', onNavChange }) => {
           <div className="bg-panel rounded p-3 text-xs font-mono text-secondaryText">
             <div className="text-[10px] text-tertiaryText mb-2 uppercase tracking-wider">System</div>
             <div className="flex justify-between"><span>Core</span><span className="text-teal-500">ONLINE</span></div>
-            <div className="flex justify-between mt-1"><span>Groq AI</span><span className="text-teal-500">READY</span></div>
+            <div className="flex justify-between mt-1"><span>Sentinel AI Agent</span><span className="text-teal-500">READY</span></div>
           </div>
 
           {user && (
